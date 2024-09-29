@@ -20,7 +20,7 @@
     button:hover {
       background-color: #ff39f8;
     }
-    h1, #hugMessage {
+    h1, #hugMessage, #adviceMessage {
       color: #ff00f7;
     }
 
@@ -67,14 +67,16 @@
 
   <div class="text-center">
     <h1 class="text-4xl font-bold mb-6">Need a Virtual Hug? 💖</h1>
-    <img id="hugImage" src="image.png" alt="Hug Image" class="hidden mx-auto mb-4"> <!-- Image hidden initially -->
-    <button id="hugButton" class=" text-white px-8 py-4 rounded-lg  transition">
-      Give Me a Hug!
+    <img id="hugImage" src="image.png" alt="Hug Image" class="hidden mx-auto mb-4"> <!-- Ensure image path is correct -->
+    <button id="hugButton" class="text-white px-8 py-4 rounded-lg transition mb-4">
+      Get a Hug🤗
+    </button>
+    <button id="adviceButton" class="text-white px-8 py-4 rounded-lg transition">
+      Advise Me😞
     </button>
     <div id="hugMessage" class="mt-8 text-2xl hidden"></div>
+    <div id="adviceMessage" class="mt-8 text-2xl hidden"></div>
   </div>
-
-
 
   <!-- Floating Emojis -->
   <div class="emoji">💖</div>
@@ -90,23 +92,38 @@
   <!-- JavaScript -->
   <script>
     const hugButton = document.getElementById('hugButton');
+    const adviceButton = document.getElementById('adviceButton');
     const hugImage = document.getElementById('hugImage');
     const hugMessage = document.getElementById('hugMessage');
+    const adviceMessage = document.getElementById('adviceMessage');
 
-    // Pairing messages with corresponding audio files
+    // Pairing messages with corresponding audio files for hugs
     const hugs = [
-    { message: 'You’re amazing! Sending you all my love 🤗', audio: 'a1.wav' },
-    { message: 'Here’s a big virtual hug, bestie! 💖', audio: 'a2.wav' },
-    { message: 'Don’t forget, I’m always here for you! 🫂', audio: 'a3.wav' },
-    { message: 'Smile, everything will be okay! 😄', audio: 'a4.wav' },
-    { message: 'You make the world a better place! 🌍✨', audio: 'a5.wav' },
-    { message: 'Sending you good vibes and positivity! 🌈', audio: 'a6.wav' },
-    { message: 'You’re stronger than you think! 💪', audio: 'a7.wav' },
-    { message: 'Keep shining bright! You’re a star! ⭐', audio: 'a8.wav' },
-    { message: 'Never give up, you’ve got this! 💖', audio: 'a9.wav' },
-    { message: 'I believe in you! Let’s conquer the world! 🌟', audio: 'a10.wav' }
-  ];
-  
+      { message: 'You’re amazing! Sending you all my love 🤗', audio: 'a1.wav' },
+      { message: 'Here’s a big virtual hug, bestie! 💖', audio: 'a2.wav' },
+      { message: 'Don’t forget, I’m always here for you! 🫂', audio: 'a3.wav' },
+      { message: 'Smile, everything will be okay! 😄', audio: 'a4.wav' },
+      { message: 'You make the world a better place! 🌍✨', audio: 'a5.wav' },
+      { message: 'Sending you good vibes and positivity! 🌈', audio: 'a6.wav' },
+      { message: 'You’re stronger than you think! 💪', audio: 'a7.wav' },
+      { message: 'Keep shining bright! You’re a star! ⭐', audio: 'a8.wav' },
+      { message: 'Never give up, you’ve got this! 💖', audio: 'a9.wav' },
+      { message: 'I believe in you! Let’s conquer the world! 🌟', audio: 'a10.wav' }
+    ];
+
+    // Pairing messages with corresponding audio files for advice
+    const advice = [
+      { message: 'It’s okay to feel sad sometimes. I’m here for you. 💔', audio: 'sad1.wav' },
+      { message: 'Take a deep breath; you are not alone in this. 🌧️', audio: 'sad2.wav' },
+      { message: 'It’s alright to cry. Let it out, and I’ll be right here. 😢', audio: 'sad3.wav' },
+      { message: 'Remember, it’s just a bad day, not a bad life. 🌈', audio: 'sad4.wav' },
+      { message: 'I believe in you, and I know you’ll get through this. 🌟', audio: 'sad5.wav' },
+      { message: 'You are loved, and your feelings matter. 💖', audio: 'sad6.wav' },
+      { message: 'Take one step at a time; you’re doing great. 🚶‍♂️', audio: 'sad7.wav' },
+      { message: 'Sometimes, it’s okay to just take a break. ⏳', audio: 'sad8.wav' },
+      { message: 'Look for the little joys around you. ☀️', audio: 'sad9.wav' },
+      { message: 'Tomorrow is a new day, and it can be better. 🌅', audio: 'sad10.wav' }
+    ];
 
     hugButton.addEventListener('click', () => {
       // Randomly pick a message and its associated audio
@@ -117,6 +134,7 @@
       // Show the random message
       hugMessage.textContent = randomMessage;
       hugMessage.classList.remove('hidden');
+      adviceMessage.classList.add('hidden'); // Hide advice message
 
       // Play the corresponding audio
       const audio = new Audio(randomAudio);
@@ -124,34 +142,63 @@
 
       // Show image and animate with GSAP (scale and opacity)
       hugImage.classList.remove('hidden');
-      gsap.fromTo(hugImage, 
-        { opacity: 0, scale: 0 }, // starting state
-        { opacity: 1, scale: 1, duration: 1, ease: 'elastic.out(1, 0.5)' } // ending state
-      );
+
+      // Ensure image is loaded before playing the animation
+      hugImage.onload = () => {
+        gsap.fromTo(hugImage, 
+          { opacity: 0, scale: 0 }, // starting state
+          { opacity: 1, scale: 1, duration: 1, ease: 'elastic.out(1, 0.5)' } // ending state
+        );
+      };
 
       // Animate button with GSAP
       gsap.to('#hugButton', { scale: 1.2, duration: 0.5, ease: "elastic.out(1, 0.5)" });
       gsap.to('#hugButton', { scale: 1, duration: 0.3, delay: 0.5 });
     });
 
-    // Emoji Animation Loop
-    const emojis = document.querySelectorAll('.emoji');
-    emojis.forEach((emoji) => {
-      animateEmoji(emoji);
+    adviceButton.addEventListener('click', () => {
+      // Randomly pick a message and its associated audio for advice
+      const randomAdvice = advice[Math.floor(Math.random() * advice.length)];
+      const randomMessage = randomAdvice.message;
+      const randomAudio = randomAdvice.audio;
+
+      // Show the random message
+      adviceMessage.textContent = randomMessage;
+      adviceMessage.classList.remove('hidden');
+      hugMessage.classList.add('hidden'); // Hide hug message
+
+      // Show the hug image and animate it
+      hugImage.classList.remove('hidden');
+
+      // Ensure image is loaded before playing the animation
+      hugImage.onload = () => {
+        gsap.fromTo(hugImage, 
+          { opacity: 0, scale: 0 }, // starting state
+          { opacity: 1, scale: 1, duration: 1, ease: 'elastic.out(1, 0.5)' } // ending state
+        );
+      };
+
+      // Play the corresponding audio
+      const audio = new Audio(randomAudio);
+      audio.play();
+
+      // Animate button with GSAP
+      gsap.to('#adviceButton', { scale: 1.2, duration: 0.5, ease: "elastic.out(1, 0.5)" });
+      gsap.to('#adviceButton', { scale: 1, duration: 0.3, delay: 0.5 });
     });
 
+    // Floating emojis animation
+    const emojis = document.querySelectorAll('.emoji');
+    emojis.forEach(emoji => animateEmoji(emoji));
+
     function animateEmoji(emoji) {
-      const randomY = Math.random() * window.innerHeight;
       const randomX = Math.random() * window.innerWidth;
-      gsap.fromTo(emoji, { y: randomY, x: randomX }, {
-        y: -window.innerHeight,
-        x: randomX,
-        duration: 5 + Math.random() * 10,
-        ease: 'power1.inOut',
-        repeat: -1
-      });
+      const randomDuration = Math.random() * 6 + 4; // between 4s to 10s
+      const randomDelay = Math.random() * 2; // Random delay
+      gsap.to(emoji, { y: '-100vh', x: randomX, duration: randomDuration, delay: randomDelay, onComplete: () => {
+          animateEmoji(emoji); // Call again to keep floating
+      }});
     }
   </script>
-
 </body>
 </html>

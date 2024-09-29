@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Hug for My Best Friend</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #ffb1fc;
+      overflow: hidden;
+    }
+    img {
+      width: 400px;
+    }
+    button {
+      background-color: #ff00f7;
+    }
+    button:hover {
+      background-color: #ff39f8;
+    }
+    h1, #hugMessage {
+      color: #ff00f7;
+    }
+
+    /* Floating Emojis */
+    .emoji {
+      position: absolute;
+      font-size: 2.5rem;
+      animation: float 10s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh);
+        opacity: 0;
+      }
+    }
+
+    /* Different positions for floating emojis */
+    .emoji:nth-child(1) { left: 10%; animation-duration: 12s; }
+    .emoji:nth-child(2) { left: 25%; animation-duration: 15s; }
+    .emoji:nth-child(3) { left: 50%; animation-duration: 9s; }
+    .emoji:nth-child(4) { left: 75%; animation-duration: 14s; }
+    .emoji:nth-child(5) { left: 90%; animation-duration: 10s; }
+
+    /* Additional content styling */
+    #extraContent {
+      margin-top: 40px;
+      color: #ff00f7;
+    }
+    .message {
+      font-size: 1.5rem;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center h-screen">
+
+  <div class="text-center">
+    <h1 class="text-4xl font-bold mb-6">Need a Virtual Hug? 💖</h1>
+    <img id="hugImage" src="image.png" alt="Hug Image" class="hidden mx-auto mb-4"> <!-- Image hidden initially -->
+    <button id="hugButton" class=" text-white px-8 py-4 rounded-lg  transition">
+      Give Me a Hug!
+    </button>
+    <div id="hugMessage" class="mt-8 text-2xl hidden"></div>
+  </div>
+
+
+
+  <!-- Floating Emojis -->
+  <div class="emoji">💖</div>
+  <div class="emoji">💞</div>
+  <div class="emoji">❣️</div>
+  <div class="emoji">💝</div>
+  <div class="emoji">🩷</div>
+
+  <!-- GSAP and Three.js libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- JavaScript -->
+  <script>
+    const hugButton = document.getElementById('hugButton');
+    const hugImage = document.getElementById('hugImage');
+    const hugMessage = document.getElementById('hugMessage');
+
+    // Pairing messages with corresponding audio files
+    const hugs = [
+    { message: 'You’re amazing! Sending you all my love 🤗', audio: 'a1.wav' },
+    { message: 'Here’s a big virtual hug, bestie! 💖', audio: 'a2.wav' },
+    { message: 'Don’t forget, I’m always here for you! 🫂', audio: 'a3.wav' },
+    { message: 'Smile, everything will be okay! 😄', audio: 'a4.wav' },
+    { message: 'You make the world a better place! 🌍✨', audio: 'a5.wav' },
+    { message: 'Sending you good vibes and positivity! 🌈', audio: 'a6.wav' },
+    { message: 'You’re stronger than you think! 💪', audio: 'a7.wav' },
+    { message: 'Keep shining bright! You’re a star! ⭐', audio: 'a8.wav' },
+    { message: 'Never give up, you’ve got this! 💖', audio: 'a9.wav' },
+    { message: 'I believe in you! Let’s conquer the world! 🌟', audio: 'a10.wav' }
+  ];
+  
+
+    hugButton.addEventListener('click', () => {
+      // Randomly pick a message and its associated audio
+      const randomHug = hugs[Math.floor(Math.random() * hugs.length)];
+      const randomMessage = randomHug.message;
+      const randomAudio = randomHug.audio;
+
+      // Show the random message
+      hugMessage.textContent = randomMessage;
+      hugMessage.classList.remove('hidden');
+
+      // Play the corresponding audio
+      const audio = new Audio(randomAudio);
+      audio.play();
+
+      // Show image and animate with GSAP (scale and opacity)
+      hugImage.classList.remove('hidden');
+      gsap.fromTo(hugImage, 
+        { opacity: 0, scale: 0 }, // starting state
+        { opacity: 1, scale: 1, duration: 1, ease: 'elastic.out(1, 0.5)' } // ending state
+      );
+
+      // Animate button with GSAP
+      gsap.to('#hugButton', { scale: 1.2, duration: 0.5, ease: "elastic.out(1, 0.5)" });
+      gsap.to('#hugButton', { scale: 1, duration: 0.3, delay: 0.5 });
+    });
+
+    // Emoji Animation Loop
+    const emojis = document.querySelectorAll('.emoji');
+    emojis.forEach((emoji) => {
+      animateEmoji(emoji);
+    });
+
+    function animateEmoji(emoji) {
+      const randomY = Math.random() * window.innerHeight;
+      const randomX = Math.random() * window.innerWidth;
+      gsap.fromTo(emoji, { y: randomY, x: randomX }, {
+        y: -window.innerHeight,
+        x: randomX,
+        duration: 5 + Math.random() * 10,
+        ease: 'power1.inOut',
+        repeat: -1
+      });
+    }
+  </script>
+
+</body>
+</html>
